@@ -407,79 +407,74 @@
           </div>
         </div>
 
-        <div
-          id="view-forgot"
-          class="form-view hidden-view max-w-sm mx-auto w-full"
-        >
-          <div class="mb-8">
-            <div
-              class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 14l-1 1-1 1H6v-1l4-4 4-4H9a1 1 0 00-1-1 1 1 0 001-1 1 1 0 001-1 1 1 0 001-1z"
-                />
-              </svg>
+        <!-- ── Forgot Password: 3-step flow ── -->
+        <div id="view-forgot" class="form-view hidden-view max-w-sm mx-auto w-full">
+
+          <!-- Step 1: Enter Email -->
+          <div id="forgot-step-1">
+            <div class="mb-6">
+              <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-xl">🔐</div>
+              <h3 class="text-3xl font-serif text-brandBlack mb-2">Forgot Password?</h3>
+              <p class="text-gray-500 text-sm">Enter your registered email. We'll send a 6-digit OTP.</p>
             </div>
-            <h3 class="text-3xl font-serif text-brandBlack mb-2">
-              Reset Password
-            </h3>
-            <p class="text-gray-500 text-sm">
-              Enter your university email and we'll send you a link to reset your
-              password.
-            </p>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3">Email Address</label>
+                <input type="email" id="input-forgot-email" placeholder="student@university.edu" class="auth-input" />
+              </div>
+              <button id="btn-forgot-send-otp" class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition mt-2">
+                Send OTP
+              </button>
+            </div>
           </div>
 
-          <form id="form-forgot" class="space-y-4">
-            <div>
-              <label
-                class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3"
-                >University Email</label
-              >
-              <input
-                type="email"
-                id="input-forgot-email"
-                placeholder="student@university.edu"
-                class="auth-input"
-              />
+          <!-- Step 2: Enter OTP -->
+          <div id="forgot-step-2" class="hidden">
+            <div class="mb-6">
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 text-xl">📧</div>
+              <h3 class="text-3xl font-serif text-brandBlack mb-2">Check Your Email</h3>
+              <p class="text-gray-500 text-sm">Enter the 6-digit OTP sent to <strong id="forgot-email-display"></strong>. Valid for 10 minutes.</p>
             </div>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3">6-Digit OTP</label>
+                <input type="text" id="input-forgot-otp" placeholder="123456" maxlength="6" class="auth-input text-center text-2xl tracking-[0.5em] font-mono" />
+              </div>
+              <button id="btn-forgot-verify-otp" class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition mt-2">
+                Verify OTP
+              </button>
+              <button id="btn-forgot-resend" class="w-full text-sm text-gray-500 hover:text-black py-2">
+                Didn't receive it? Resend OTP
+              </button>
+            </div>
+          </div>
 
-            <button
-              type="submit"
-              id="btn-forgot-submit"
-              class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition transform duration-200 mt-4"
-            >
-              Send Reset Link
-            </button>
-          </form>
+          <!-- Step 3: New Password -->
+          <div id="forgot-step-3" class="hidden">
+            <div class="mb-6">
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-xl">✅</div>
+              <h3 class="text-3xl font-serif text-brandBlack mb-2">Set New Password</h3>
+              <p class="text-gray-500 text-sm">OTP verified! Choose a strong new password.</p>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3">New Password</label>
+                <input type="password" id="input-new-password" placeholder="Min 6 characters" class="auth-input" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3">Confirm Password</label>
+                <input type="password" id="input-confirm-new-password" placeholder="Repeat password" class="auth-input" />
+              </div>
+              <button id="btn-forgot-reset" class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition mt-2">
+                Reset Password
+              </button>
+            </div>
+          </div>
 
-          <div class="mt-8 text-center">
-            <button
-              id="btn-back-login"
-              class="text-sm font-medium text-gray-500 hover:text-black flex items-center justify-center gap-2 mx-auto"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
+          <div class="mt-6 text-center">
+            <button id="btn-back-login" class="text-sm font-medium text-gray-500 hover:text-black flex items-center justify-center gap-2 mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
               Back to Login
             </button>
@@ -511,11 +506,11 @@
             }
         };
         
-        // Bind Buttons (since we removed inline onclicks)
+        // Bind Buttons
         document.getElementById('btn-switch-register').onclick = () => switchView('register');
         document.getElementById('btn-switch-login').onclick = () => switchView('login');
         document.getElementById('btn-back-login').onclick = () => switchView('login');
-        document.getElementById('btn-switch-forgot').onclick = () => switchView('forgot');
+        // btn-switch-forgot is handled below in the forgot-password section
 
 
         // 2. Role Selector Logic
@@ -564,18 +559,116 @@
         // 4. Register Logic
         document.getElementById('form-register').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Collect data...
             const name = document.getElementById('input-register-fullname').value;
             const email = document.getElementById('input-register-email').value;
             const password = document.getElementById('input-register-password').value;
-            
-            const result = await API.register({ name, email, password });
+            const studentId = document.getElementById('input-register-studentid').value;
+            const phone = document.getElementById('input-register-phone').value;
+
+            const btn = document.getElementById('btn-register-submit');
+            btn.disabled = true; btn.textContent = 'Creating...';
+
+            const result = await API.register({ name, email, password, studentId, phone });
+            btn.disabled = false; btn.textContent = 'Create Account';
+
             if (result.success) {
-                alert("Account created! Redirecting...");
                 window.location.href = 'student_dashboard.html';
             } else {
                 alert(result.message);
             }
+        });
+
+        // ── 5. Forgot Password: 3-step flow ──────────────────────────────────
+        let forgotEmail = '';
+        let forgotResetToken = '';
+
+        const showForgotStep = (step) => {
+            document.getElementById('forgot-step-1').classList.add('hidden');
+            document.getElementById('forgot-step-2').classList.add('hidden');
+            document.getElementById('forgot-step-3').classList.add('hidden');
+            document.getElementById(`forgot-step-${step}`).classList.remove('hidden');
+        };
+
+        // Step 1: Send OTP
+        document.getElementById('btn-forgot-send-otp').addEventListener('click', async () => {
+            const email = document.getElementById('input-forgot-email').value.trim();
+            if (!email) { alert('Please enter your email.'); return; }
+
+            const btn = document.getElementById('btn-forgot-send-otp');
+            btn.disabled = true; btn.textContent = 'Sending...';
+
+            const result = await API.forgotPassword(email);
+            btn.disabled = false; btn.textContent = 'Send OTP';
+
+            if (result.success) {
+                forgotEmail = email;
+                document.getElementById('forgot-email-display').textContent = email;
+                showForgotStep(2);
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // Step 2: Verify OTP
+        document.getElementById('btn-forgot-verify-otp').addEventListener('click', async () => {
+            const otp = document.getElementById('input-forgot-otp').value.trim();
+            if (!otp || otp.length !== 6) { alert('Please enter the 6-digit OTP.'); return; }
+
+            const btn = document.getElementById('btn-forgot-verify-otp');
+            btn.disabled = true; btn.textContent = 'Verifying...';
+
+            const result = await API.verifyOtp(forgotEmail, otp);
+            btn.disabled = false; btn.textContent = 'Verify OTP';
+
+            if (result.success) {
+                forgotResetToken = result.resetToken;
+                showForgotStep(3);
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // Resend OTP
+        document.getElementById('btn-forgot-resend').addEventListener('click', async () => {
+            if (!forgotEmail) { showForgotStep(1); return; }
+            const result = await API.forgotPassword(forgotEmail);
+            alert(result.success ? '✅ New OTP sent! Check your email.' : result.message);
+        });
+
+        // Step 3: Reset Password
+        document.getElementById('btn-forgot-reset').addEventListener('click', async () => {
+            const newPass = document.getElementById('input-new-password').value;
+            const confirmPass = document.getElementById('input-confirm-new-password').value;
+
+            if (!newPass || newPass.length < 6) { alert('Password must be at least 6 characters.'); return; }
+            if (newPass !== confirmPass) { alert('Passwords do not match.'); return; }
+
+            const btn = document.getElementById('btn-forgot-reset');
+            btn.disabled = true; btn.textContent = 'Resetting...';
+
+            const result = await API.resetPassword(forgotResetToken, newPass);
+            btn.disabled = false; btn.textContent = 'Reset Password';
+
+            if (result.success) {
+                alert('✅ Password reset successfully! Please log in with your new password.');
+                // Reset state and go back to login
+                forgotEmail = '';
+                forgotResetToken = '';
+                document.getElementById('input-forgot-email').value = '';
+                document.getElementById('input-forgot-otp').value = '';
+                document.getElementById('input-new-password').value = '';
+                document.getElementById('input-confirm-new-password').value = '';
+                showForgotStep(1);
+                switchView('login');
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // Reset forgot flow when switching to forgot view
+        document.getElementById('btn-switch-forgot').addEventListener('click', () => {
+            showForgotStep(1);
+            switchView('forgot');
         });
 
     </script>

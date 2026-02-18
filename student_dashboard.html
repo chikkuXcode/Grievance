@@ -330,9 +330,8 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-500 uppercase font-bold mb-2">Attachments</p>
-                            <div id="attachment-list" class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
-                                <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center text-[10px] font-bold">JPG</div>
-                                <span class="text-xs font-bold">photo_proof.jpg</span>
+                            <div id="attachment-list" class="flex flex-wrap gap-2">
+                                <!-- Attachments rendered dynamically by student.js -->
                             </div>
                         </div>
                     </div>
@@ -370,9 +369,8 @@
 
     </main>
 
-    <script type="module" src="/js/core.js"></script>
     <script type="module" src="/js/api.js"></script>
-    <script type="module" src="/js/case.js"></script>
+    <script type="module" src="/js/core.js"></script>
     <script type="module" src="/js/student.js"></script>
 </body>
 </html>

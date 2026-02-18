@@ -255,20 +255,14 @@
                             The water cooler located near Room 204 has been leaking continuously for the past 48 hours. 
                             It is creating a large puddle which is a slipping hazard. I have reported this to the cleaner but no action has been taken.
                         </p>
-                        <div id="attachment-list" class="mt-6 p-4 bg-gray-50 rounded-xl flex items-center gap-3 border border-gray-100 w-max">
-                            <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-xs font-bold">JPG</div>
-                            <div>
-                                <p class="text-sm font-bold">evidence_photo.jpg</p>
-                                <p class="text-[10px] text-gray-500">2.4 MB</p>
-                            </div>
-                            <button class="text-xs underline ml-4">View</button>
+                        <div id="attachment-list" class="mt-4 flex flex-wrap gap-2">
+                            <!-- Attachments rendered dynamically by admin.js -->
                         </div>
                     </div>
 
                     <div class="glass-panel p-6 rounded-[2rem]">
                         <div class="flex border-b border-gray-100 mb-4">
                             <button class="px-4 py-2 text-sm font-bold border-b-2 border-black">Student Chat</button>
-                            <button class="px-4 py-2 text-sm text-gray-400 hover:text-black">Internal Notes (Private)</button>
                         </div>
                         
                         <div class="space-y-4 h-64 overflow-y-auto bg-gray-50/50 p-4 rounded-xl mb-4" id="chat-thread">
@@ -483,9 +477,8 @@
         </div>
     </div>
 
-    <script type="module" src="/js/core.js"></script>
     <script type="module" src="/js/api.js"></script>
-    <script type="module" src="/js/case.js"></script>
+    <script type="module" src="/js/core.js"></script>
     <script type="module" src="/js/admin.js"></script>
 </body>
 </html>
