@@ -1,57 +1,56 @@
-/**
- * Mailer Utility - Sends emails via Gmail SMTP using Nodemailer
- * Configure MAIL_USER and MAIL_PASS in .env
- */
-
 const nodemailer = require('nodemailer');
 
-// Create reusable transporter
-const createTransporter = () => {
-    return nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS   // Use Gmail App Password (not your real password)
-        }
-    });
-};
-
 /**
- * Send a generic email
+ * Send a generic email via Brevo SMTP
  * @param {string} to - Recipient email
+ * @param {string} toName - Recipient name
  * @param {string} subject - Email subject
  * @param {string} html - HTML body
  */
-const sendMail = async (to, subject, html) => {
-    try {
-        const user = process.env.MAIL_USER;
-        const pass = process.env.MAIL_PASS;
-        if (!user || !pass || user === 'your_gmail@gmail.com' || pass === 'your_gmail_app_password') {
-            console.warn('[Mailer] Email not configured — set MAIL_USER and MAIL_PASS in .env to enable emails.');
-            return { success: false, message: 'Email not configured' };
-        }
+const sendMail = async (to, toName, subject, html) => {
+  const host = process.env.SMTP_HOST || 'smtp-relay.brevo.com';
+  const port = process.env.SMTP_PORT || 587;
+  const user = process.env.SMTP_USER || 'a2be5b001@smtp-brevo.com';
+  const pass = process.env.SMTP_PASS || process.env.BREVO_API_KEY || ''; // Use SMTP_PASS or fall back to BREVO_API_KEY
+  const fromEmail = process.env.MAIL_FROM_EMAIL || 'chiks0950@gmail.com';
+  const fromName = process.env.MAIL_FROM_NAME || 'Grievance.io';
 
-        const transporter = createTransporter();
-        const info = await transporter.sendMail({
-            from: `"Grievance.io" <${process.env.MAIL_USER}>`,
-            to,
-            subject,
-            html
-        });
+  if (!pass) {
+    console.warn('[Mailer] SMTP Password (or Brevo API Key) not configured — set SMTP_PASS in .env to enable emails.');
+    return { success: false, message: 'Email not configured. Set SMTP_PASS in .env' };
+  }
 
-        console.log(`[Mailer] Email sent to ${to}: ${info.messageId}`);
-        return { success: true, messageId: info.messageId };
-    } catch (err) {
-        console.error('[Mailer] Failed to send email:', err.message);
-        return { success: false, message: err.message };
-    }
+  try {
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port == 465, // Use true for 465, false for other ports
+      auth: {
+        user,
+        pass
+      }
+    });
+
+    const info = await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: `"${toName || to}" <${to}>`,
+      subject,
+      html
+    });
+
+    console.log(`[Mailer] Email sent to ${to} via SMTP. MessageId: ${info.messageId}`);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('[Mailer] SMTP Error:', error.message);
+    return { success: false, message: error.message };
+  }
 };
 
 /**
  * Send case resolved notification to student
  */
 const sendResolutionEmail = async (studentEmail, studentName, caseId, subject, remark) => {
-    const html = `
+  const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -82,11 +81,11 @@ const sendResolutionEmail = async (studentEmail, studentName, caseId, subject, r
           <p>University Grievance Management System</p>
         </div>
         <div class="body">
-          <span class="badge">✓ Case Resolved</span>
+          <span class="badge">&#10003; Case Resolved</span>
           <h2>Your grievance has been resolved!</h2>
           <p>Dear <strong>${studentName}</strong>,</p>
           <p>We're happy to inform you that your grievance has been reviewed and successfully resolved by our team.</p>
-          
+
           <div class="case-box">
             <div class="label">Case ID</div>
             <div class="value">#${caseId}</div>
@@ -103,20 +102,20 @@ const sendResolutionEmail = async (studentEmail, studentName, caseId, subject, r
         </div>
         <div class="footer">
           <p>This is an automated message. Please do not reply to this email.</p>
-          <p style="margin-top:8px;">© ${new Date().getFullYear()} University Grievance System</p>
+          <p style="margin-top:8px;">&#169; ${new Date().getFullYear()} University Grievance System</p>
         </div>
       </div>
     </body>
     </html>`;
 
-    return sendMail(studentEmail, `✅ Case #${caseId} Resolved — Grievance.io`, html);
+  return sendMail(studentEmail, studentName, `Case #${caseId} Resolved - Grievance.io`, html);
 };
 
 /**
  * Send password reset OTP email
  */
 const sendPasswordResetEmail = async (email, name, otp) => {
-    const html = `
+  const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -147,17 +146,17 @@ const sendPasswordResetEmail = async (email, name, otp) => {
           <p>Hi <strong>${name || 'User'}</strong>, use the OTP below to reset your password.</p>
           <div class="otp-box">${otp}</div>
           <p>This OTP is valid for <strong>10 minutes</strong>. Do not share it with anyone.</p>
-          <div class="warning">⚠️ If you did not request a password reset, please ignore this email. Your account is safe.</div>
+          <div class="warning">&#9888;&#65039; If you did not request a password reset, please ignore this email. Your account is safe.</div>
         </div>
         <div class="footer">
           <p>This is an automated message. Please do not reply.</p>
-          <p style="margin-top:8px;">© ${new Date().getFullYear()} University Grievance System</p>
+          <p style="margin-top:8px;">&#169; ${new Date().getFullYear()} University Grievance System</p>
         </div>
       </div>
     </body>
     </html>`;
 
-    return sendMail(email, '🔐 Password Reset OTP — Grievance.io', html);
+  return sendMail(email, name || 'User', 'Password Reset OTP - Grievance.io', html);
 };
 
 module.exports = { sendMail, sendResolutionEmail, sendPasswordResetEmail };

@@ -8,11 +8,11 @@ import API from './api.js';
 const Core = {
     init: () => {
         Core.log("Initializing App...");
-        
+
         // 1. Check Auth (Skip for index/auth pages)
         const path = window.location.pathname;
         const isPublic = path.endsWith('index.html') || path.endsWith('auth.html') || path === '/';
-        
+
         const user = API.getCurrentUser();
 
         if (!isPublic) {
@@ -21,10 +21,10 @@ const Core = {
                 window.location.href = 'auth.html';
                 return;
             }
-            
+
             // Role Guard
             Core.checkRoleAccess(user, path);
-            
+
             // Initialize User Header
             Core.updateHeader(user);
         }
@@ -38,17 +38,17 @@ const Core = {
             // For simplicity, dashboard starts at 'overview' or 'dashboard'
             // We can read the current active class if set in HTML, or default to first.
             const activeView = document.querySelector('.view-section.active');
-            if(!activeView) {
+            if (!activeView) {
                 Core.navTo('overview'); // Default fallback
             }
         }
-        
+
         // 4. Landing Page Logic (Carousel, etc.)
         if (isPublic && document.getElementById('testimonial-track')) {
             Core.initLanding();
         }
     },
-    
+
     /**
      * Landing Page specific logic
      */
@@ -59,7 +59,7 @@ const Core = {
             const originalCards = Array.from(track.children);
             const progressBar = document.getElementById('progress-bar');
             const wrapper = document.getElementById('carousel-wrapper');
-            
+
             let index = 0;
             const totalSlides = originalCards.length;
             const intervalTime = 3000;
@@ -70,12 +70,12 @@ const Core = {
             track.appendChild(clone);
 
             const updateCarousel = () => {
-                if(isHovered) return;
+                if (isHovered) return;
                 index++;
                 track.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
                 track.style.transform = `translateX(-${index * 100}%)`;
 
-                if(progressBar) {
+                if (progressBar) {
                     progressBar.style.transition = 'none';
                     progressBar.style.width = '0%';
                     setTimeout(() => {
@@ -94,10 +94,10 @@ const Core = {
             };
 
             intervalId = setInterval(updateCarousel, intervalTime);
-            if(progressBar) progressBar.style.width = '100%';
+            if (progressBar) progressBar.style.width = '100%';
 
-            wrapper.addEventListener('mouseenter', () => { isHovered = true; if(progressBar) progressBar.style.width = '0%'; });
-            wrapper.addEventListener('mouseleave', () => { isHovered = false; if(progressBar) progressBar.style.width = '100%'; });
+            wrapper.addEventListener('mouseenter', () => { isHovered = true; if (progressBar) progressBar.style.width = '0%'; });
+            wrapper.addEventListener('mouseleave', () => { isHovered = false; if (progressBar) progressBar.style.width = '100%'; });
         }
 
         // Scroll Spy
@@ -115,12 +115,12 @@ const Core = {
             });
         }, observerOptions);
         sections.forEach(section => observer.observe(section));
-        
+
         // Reveal Animation
         const revealElements = document.querySelectorAll('.reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if(entry.isIntersecting) entry.target.classList.add('active');
+                if (entry.isIntersecting) entry.target.classList.add('active');
             });
         }, { threshold: 0.1 });
         revealElements.forEach(el => revealObserver.observe(el));
@@ -143,14 +143,33 @@ const Core = {
      * Update the user info in the header
      */
     updateHeader: (user) => {
+        // Update name
         const headerName = document.getElementById('header-user-name');
-        if (headerName) headerName.innerText = user.name;
-        
+        if (headerName) headerName.innerText = user.name || 'User';
+
+        // Update student ID / roll number beneath the name
+        const headerStudentId = document.getElementById('header-student-id');
+        if (headerStudentId) {
+            headerStudentId.innerText = user.studentId || user.department || user.role || '';
+        }
+
+        // Update avatar initials
+        const headerAvatar = document.getElementById('header-avatar');
+        if (headerAvatar && user.name) {
+            const initials = user.name
+                .split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+            headerAvatar.innerText = initials;
+        }
+
         // Setup Logout
         const btnLogout = document.getElementById('btn-logout');
         if (btnLogout) {
             btnLogout.onclick = () => {
-                if(confirm("Are you sure you want to log out?")) {
+                if (confirm("Are you sure you want to log out?")) {
                     API.logout();
                     window.location.href = 'index.html';
                 }
@@ -168,7 +187,7 @@ const Core = {
 
         // 1. Hide all Views
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        
+
         // 2. Deactivate all Nav Items
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
@@ -210,7 +229,7 @@ const Core = {
     },
 
     log: (msg) => {
-        if(window.ANTIGRAVITY_DEBUG) console.log(`[Core] ${msg}`);
+        if (window.ANTIGRAVITY_DEBUG) console.log(`[Core] ${msg}`);
     }
 };
 

@@ -5,6 +5,14 @@ const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 const { sendPasswordResetEmail } = require('../utils/mailer');
 
+// @route   GET /api/auth/google-client-id
+// @desc    Expose Google OAuth Client ID to frontend (never expose secret)
+// @access  Public
+router.get('/google-client-id', (req, res) => {
+    const clientId = process.env.GOOGLE_CLIENT_ID || '';
+    res.json({ clientId });
+});
+
 // Helper: generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -163,6 +171,15 @@ router.post('/forgot-password', async (req, res) => {
             return res.json({ success: true, message: 'If this email is registered, an OTP has been sent.' });
         }
 
+        // Check if Brevo is configured before generating OTP
+        const brevoKey = process.env.BREVO_API_KEY || '';
+        if (!brevoKey || brevoKey === 'your_brevo_api_key_here') {
+            return res.status(503).json({
+                success: false,
+                message: 'Email service is not configured. Please contact the administrator to set up Brevo API key.'
+            });
+        }
+
         // Generate 6-digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -172,7 +189,14 @@ router.post('/forgot-password', async (req, res) => {
         await user.save({ validateBeforeSave: false });
 
         // Send OTP email
-        await sendPasswordResetEmail(user.email, user.name, otp);
+        const mailResult = await sendPasswordResetEmail(user.email, user.name, otp);
+        if (!mailResult.success) {
+            console.error('[Auth] OTP email failed:', mailResult.message);
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to send OTP email. Check your Brevo API key and verified sender address.'
+            });
+        }
 
         res.json({ success: true, message: 'OTP sent to your email. Valid for 10 minutes.' });
     } catch (err) {
