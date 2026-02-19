@@ -35,9 +35,9 @@ The system replaces manual complaint boxes and email chains with a transparent, 
            │                          │
            ▼                          ▼
 ┌──────────────────┐      ┌──────────────────────────────┐
-│  MongoDB (Local) │      │  Gmail SMTP (Nodemailer)      │
-│  grievancedb     │      │  OTP emails + Resolution      │
-│  Port: 27017     │      │  notifications               │
+│  MongoDB Atlas   │      │  Brevo SMTP (Nodemailer)     │
+│  (Cloud/Remote)  │      │  OTP emails + Resolution      │
+│  grievancedb     │      │  notifications               │
 └──────────────────┘      └──────────────────────────────┘
 ```
 
@@ -54,7 +54,7 @@ The system replaces manual complaint boxes and email chains with a transparent, 
 | **Mongoose** | v9.x | MongoDB ODM (Object Document Mapper) |
 | **JSON Web Tokens (JWT)** | jsonwebtoken v9 | Authentication & session management |
 | **bcryptjs** | v3.x | Password hashing (salt rounds: 10) |
-| **Nodemailer** | v8.x | Email sending via Gmail SMTP |
+| **Nodemailer** | v8.x | Email sending via Brevo SMTP |
 | **Multer** | v2.x | File upload handling (attachments) |
 | **dotenv** | v17.x | Environment variable management |
 | **cors** | v2.x | Cross-Origin Resource Sharing |
@@ -172,7 +172,7 @@ POST /api/auth/verify-otp       →  Check OTP + expiry, return short-lived rese
 POST /api/auth/reset-password   →  Verify reset JWT, hash new password, clear OTP
 ```
 
-> ⚠️ Email (Nodemailer) requires valid Gmail App Password in `.env`. Without it, OTP emails fail silently but the system still works for login/logout.
+> ⚠️ Email (Nodemailer) requires a valid **Brevo API Key** (SMTP Password) in `.env`. Without it, OTP emails won't send, though the system remains otherwise functional.
 
 ---
 
@@ -342,9 +342,7 @@ to student                    ↓
 
 ## ⚠️ Known Issues & Notes
 
-| Issue | Status | Notes |
-|---|---|---|
-| Gmail SMTP credentials | ⚠️ Not configured | Set `MAIL_USER` + `MAIL_PASS` in `.env` with Gmail App Password. OTP emails won't send without it, but login/grievance flow works fine. |
+| Brevo SMTP credentials | ✅ Fixed | Configure `SMTP_PASS` in `.env` with your Brevo API Key for email notifications. |
 | Mongoose v9 pre-save hooks | ✅ Fixed | Removed `next()` parameter from all async pre-save hooks in `User.js` and `Case.js` |
 | Internal Notes tab | ✅ Removed | Removed from both `normal_admin.html` and `superadmin.html` — feature was UI-only and not wired to backend |
 | Hardcoded attachment UI | ✅ Fixed | All 3 dashboards now render attachments dynamically from real case data |
@@ -358,6 +356,26 @@ to student                    ↓
 - **Dark/Light contrast**: Black primary color on white/gray backgrounds
 - **Responsive**: Works on mobile and desktop
 - **Role-based dashboards**: Each role sees only what's relevant to them
+
+---
+
+## 🚀 Deployment (Render)
+
+The project is configured for easy deployment to **Render**.
+
+### Environment Variables
+Setup the following variables in the Render dashboard:
+- `NODE_ENV`: `production`
+- `MONGO_URI`: Your MongoDB Atlas connection string
+- `JWT_SECRET`: A long random string
+- `SMTP_PASS`: Your Brevo API Key
+- `MAIL_FROM_EMAIL`: `chiks0950@gmail.com` (Verified sender)
+- `MAIL_FROM_NAME`: `Grievance.io`
+- `SMTP_USER`: `a2be5b001@smtp-brevo.com`
+
+### Commands
+- **Build Command**: `npm install`
+- **Start Command**: `npm start`
 
 ---
 
