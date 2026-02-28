@@ -26,8 +26,11 @@ const sendMail = async (to, toName, subject, html) => {
     return { success: false, error };
   }
 };
- * Send case resolved notification to student
- */
+
+
+
+
+
 const sendResolutionEmail = async (
   studentEmail,
   studentName,
