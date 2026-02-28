@@ -8,12 +8,15 @@ const nodemailer = require("nodemailer");
  * @param {string} html - HTML body
  */
 const sendMail = async (to, toName, subject, html) => {
-  const host = process.env.SMTP_HOST || "smtp.gmail.com";
-  const port = process.env.SMTP_PORT || 465;
-  const user = process.env.SMTP_USER || "doraemonxdev@gmail.com";
-  const pass = process.env.SMTP_PASS || "xtgx assk wtju lojh"; // Use SMTP_PASS or fall back to BREVO_API_KEY
-  const fromEmail = process.env.MAIL_FROM_EMAIL || "chiks0950@gmail.com";
-  const fromName = process.env.MAIL_FROM_NAME || "Grievance.io";
+const host = process.env.SMTP_HOST || "smtp-relay.brevo.com";
+const port = process.env.SMTP_PORT || 587;
+const user = process.env.SMTP_USER;
+const pass = process.env.SMTP_PASS;
+const port = process.env.SMTP_PORT || 465;
+const user = process.env.SMTP_USER;
+const pass = process.env.SMTP_PASS;
+const fromEmail = process.env.MAIL_FROM_EMAIL || "chiks0950@gmail.com";
+const fromName = process.env.MAIL_FROM_NAME || "Grievance.io";
 
   if (!pass) {
     console.warn(
@@ -29,7 +32,7 @@ const sendMail = async (to, toName, subject, html) => {
     const transporter = nodemailer.createTransport({
       host,
       port,
-      secure: true, // Use true for 465, false for other ports
+      secure: false, // IMPORTANT: false for 587
       auth: {
         user,
         pass,
