@@ -1,14 +1,25 @@
 const nodemailer = require("nodemailer");
 
+
 const sendMail = async (to, toName, subject, html) => {
   try {
     const user = process.env.EMAIL_USER;
     const pass = process.env.EMAIL_PASS;
     const fromName = process.env.MAIL_FROM_NAME || "Grievance.io";
 
+    if (!user || !pass) {
+      throw new Error("Email credentials not configured");
+    }
+
     const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user, pass },
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // TLS
+      auth: {
+        user: user,
+        pass: pass,
+      },
+      connectionTimeout: 20000,
     });
 
     const info = await transporter.sendMail({
@@ -19,14 +30,14 @@ const sendMail = async (to, toName, subject, html) => {
     });
 
     console.log("EMAIL SENT:", info.messageId);
-    return { success: true };
+
+    return { success: true, messageId: info.messageId };
 
   } catch (error) {
     console.error("EMAIL ERROR:", error);
-    return { success: false, error };
+    return { success: false, message: error.message };
   }
 };
-
 
 
 
