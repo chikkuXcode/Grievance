@@ -1,22 +1,17 @@
 const nodemailer = require("nodemailer");
 
 const sendMail = async (to, toName, subject, html) => {
-  const host = process.env.SMTP_HOST || "smtp-relay.brevo.com";
-  const port = process.env.SMTP_PORT || 587;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const fromEmail = process.env.MAIL_FROM_EMAIL;
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
   const fromName = process.env.MAIL_FROM_NAME || "Grievance.io";
 
   if (!user || !pass) {
-    console.error("SMTP credentials not configured.");
+    console.error("Gmail credentials not configured.");
     return { success: false, message: "SMTP not configured" };
   }
 
   const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: false, // Brevo uses 587
+    service: "gmail",
     auth: {
       user,
       pass,
@@ -24,7 +19,7 @@ const sendMail = async (to, toName, subject, html) => {
   });
 
   const info = await transporter.sendMail({
-    from: `"${fromName}" <${fromEmail}>`,
+    from: `"${fromName}" <${user}>`,
     to: `"${toName || to}" <${to}>`,
     subject,
     html,
@@ -32,7 +27,6 @@ const sendMail = async (to, toName, subject, html) => {
 
   return { success: true, messageId: info.messageId };
 };
-
 /**
  * Send case resolved notification to student
  */
