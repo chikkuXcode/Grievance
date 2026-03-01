@@ -6,18 +6,25 @@
     <title>Authentication</title>
 </head>
 <body>
-    <h1>Authenticate with Google</h1>
+    <h1>Google OAuth Authentication</h1>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script>
-        function handleGoogleCredential(credential) {
-            const idToken = credential.idToken;
-            API.request({ credential: idToken })
-                .then(response => {
-                    console.log('Success:', response);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        function handleGoogleCredential(response) {
+            const { credential: idToken } = response;
+            // Proceed with your authentication logic using idToken
         }
     </script>
+    <div id="g_id_onload"
+         data-client_id="YOUR_CLIENT_ID"
+         data-callback="handleGoogleCredential">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="filled_blue"
+         data-text="continue_with"
+         data-size="large"
+         data-logo_alignment="left">
+    </div>
 </body>
 </html>
