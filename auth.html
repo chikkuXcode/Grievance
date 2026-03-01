@@ -1,1 +1,23 @@
-const result = await API.request('POST', '/auth/google', {\n  credential: idToken\n});
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+</head>
+<body>
+    <h1>Authenticate with Google</h1>
+    <script>
+        function handleGoogleCredential(credential) {
+            const idToken = credential.idToken;
+            API.request({ credential: idToken })
+                .then(response => {
+                    console.log('Success:', response);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
