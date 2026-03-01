@@ -193,8 +193,7 @@ router.post('/forgot-password', async (req, res) => {
             console.error('[Auth] OTP email failed:', mailResult.message);
             return res.status(500).json({
                 success: false,
-                message: 'Failed to send OTP email. Check your Brevo API key and verified sender address.'
-            });
+                message: 'Failed to send OTP email. Please try again later.'            });
         }
 
         res.json({ success: true, message: 'OTP sent to your email. Valid for 10 minutes.' });
